@@ -7,7 +7,7 @@ var Runner = {
 	start: function(){
 		Renderer.canvas = Runner.initCanvas();
 		Renderer.init();
-		ModelLoader.loadModel("models/bitwaffle/bitwaffle.mtl", "models/bitwaffle/bitwaffle.obj");
+		ModelLoader.loadModel("models/bitwaffle/bitwaffle.obj", "models/bitwaffle/bitwaffle.mtl");
 		Runner.update();
 	},
 
