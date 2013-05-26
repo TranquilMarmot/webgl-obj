@@ -56,7 +56,7 @@
 		varying vec3 Normal;
 		varying vec2 TexCoord;
 
-		uniform sampler2D Tex1;
+		//uniform sampler2D Tex1;
 
 		struct LightInfo {
 		  vec4 LightPosition;  // Light position in eye coords.
@@ -88,7 +88,8 @@
 		}
 
 		void main() {
-		    vec4 texColor = texture2D(Tex1, TexCoord);
+		    //vec4 texColor = texture2D(Tex1, TexCoord);
+		    vec4 texColor = vec4(0.0, 1.0, 0.0, 1.0);
 		    	
 		    if(Light.LightEnabled){
 			    vec3 ambAndDiff, spec;
@@ -141,6 +142,7 @@
 
     <script src="js/sandbox.js" type="text/javascript"></script>
     <script src="js/modelloader.js" type="text/javascript"></script>
+    <script src="js/modelrenderer.js" type="text/javascript"></script>
     
     <script src="js/runner.js" type="text/javascript"></script>
 

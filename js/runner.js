@@ -3,19 +3,10 @@ function start(){
 }
 
 var Runner = {
-	models: {},
-
-
 	/** Starts and runs app */
 	start: function(){
 		Renderer.canvas = Runner.initCanvas();
 		Renderer.init();
-		var bitwaffle = ModelLoader.loadModel(
-			"models/bitwaffle/bitwaffle.obj", "models/bitwaffle/bitwaffle.mtl",
-			function(model){
-				Runner.models['bitwaffle'] = model;
-			}
-		);
 		Runner.update();
 	},
 

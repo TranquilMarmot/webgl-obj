@@ -12,64 +12,6 @@ var ModelLoader = {
 	},
 
 	/**
-	  * Actually creates a model object and returns it via onFinish function
-	  * parts: List of parts of model (each part has its own material)
-	  * vertBuff: Buffer of position vertices
-	  * normBuff: Buffer of normal vertices
-	  * texBuff: Buffer of texture coordinates
-	  * onFinish: Called with finished model as parameter
-	  */
-	makeModel: function(parts, vertBuff, normBuff, texBuff, onFinish){
-		var model = {};
-		model.parts = modelParts;
-		model.vertBuff = vertBuff;
-		model.normBuff = normBuff;
-		model.texBuff = texBuff;
-
-		model.render = function(gl, program){
-			var
-			positionHandle = gl.getAttribLocation(program, "VertexPosition"),
-			normalHandle   = gl.getAttribLocation(program, "VertexNormal"),
-			texHandle      = gl.getAttribLocation(program, "VertexTexCoord"),
-			kaHandle       = gl.getUniformLocation(program, "Material.Ka"),
-			kdHandle       = gl.getUniformLocation(program, "Material.Kd"),
-			ksHandle       = gl.getUniformLocation(program, "Material.Ks"),
-			shinyHandle    = gl.getUniformLocation(program, "Material.Shininess");
-
-			gl.enableVertexAttribArray(positionHandle);
-			gl.bindBuffer(gl.ARRAY_BUFFER, this.vertBuff);
-			gl.vertexAttribPointer(positionHandle, 3, gl.FLOAT, false, 0, 0);
-
-			gl.enableVertexAttribArray(normalHandle);
-			gl.bindBuffer(gl.ARRAY_BUFFER, this.normBuff);
-			gl.vertexAttribPointer(normalHandle, 3, gl.FLOAT, false, 0, 0);
-
-			gl.enableVertexAttribArray(texHandle);
-			gl.bindBuffer(gl.ARRAY_BUFFER, this.texBuff);
-			gl.vertexAttribPointer(texHandle, 2, gl.FLOAT, false, 0, 0);
-
-			for(var i = 0; i < this.parts.length; i++){
-				var
-				part = this.parts[i],
-				mat  = part.material;
-
-				gl.uniform3f(kaHandle, mat.Ka);
-				gl.uniform3f(ksHandle, mat.Ks);
-				gl.uniform3f(kdHandle, mat.Kd);
-				gl.uniform1f(shinyHandle, mat.Shininess);
-				gl.drawArrays(gl.TRIANGLES, part.index, part.count);
-			}
-
-			gl.disableVertexAttribArray(positionHandle);
-			gl.disableVertexAttribArray(normalHandle);
-			gl.disableVertexAttribArray(texHandle);
-		}
-
-
-		onFinish(model);
-	},
-
-	/**
 	  * Parses a material library then calls the given function
 	  * text: Plaintext of mtl file
 	  * objurl: URL of obj file to load after loading mtl file
@@ -361,11 +303,26 @@ var ModelLoader = {
 
 		// create buffers for sending data to WebGL
 		var
-		vertBuff = new Float32Array(vertsArr),
-		normBuff = new Float32Array(normArr),
-		texBuff  = new Float32Array(texArr);
+		vertBuff = gl.createBuffer(),
+		normBuff = gl.createBuffer(),
+		texBuff  = gl.createBuffer();
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertBuff);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertsArr), gl.STATIC_DRAW);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, normBuff);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normArr), gl.STATIC_DRAW);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, texBuff);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texArr), gl.STATIC_DRAW);
 
 		// actually make the model
-		this.makeModel(modelParts, vertBuff, normBuff, texBuff, onFinish);
+		var model = {};
+		model.parts = modelParts;
+		model.vertBuff = vertBuff;
+		model.normBuff = normBuff;
+		model.texBuff = texBuff;
+
+		onFinish(model);
 	}
 }

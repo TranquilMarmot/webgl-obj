@@ -2,14 +2,7 @@ var Renderer = {
 	canvas: {}, gl: {},   // canvas being drawn to and WebGL context
 	shaderProgram: {},    // shader program handle
 	quadBuffer: {},       // buffer to hold position vertices for quad
-
-	//  modelview and projection matrices
-	modelview: {}, projection: {},
-	
-	// location of attributes and uniforms in shaders
-	//positionHandle = {}, normalHandle = {}, texCoordHandle = {},
-	//modelviewHandle = {}, 
-
+	models:     {},       // list of loaded models
 
 	// used for timing
 	time: 0, startTime: Date.now(),
@@ -27,9 +20,16 @@ var Renderer = {
 			this.onWindowResize();
 			window.addEventListener('resize', this.onWindowResize, false);
 
-			//this.initShaders();
-			//this.initBuffers();
-	  }
+			Sandbox.init();
+			ModelRenderer.init();
+	  	}
+
+	  	var bitwaffle = ModelLoader.loadModel(
+			"models/bitwaffle/bitwaffle.obj", "models/bitwaffle/bitwaffle.mtl",
+			function(model){
+				Renderer.models['bitwaffle'] = model;
+			}
+		);
 	},
 
 	/** What happens when window gets resized */
@@ -57,8 +57,6 @@ var Renderer = {
 			gl.clearDepth(1.0);					// Clear everything
 			gl.enable(gl.DEPTH_TEST);			// Enable depth testing
 			gl.depthFunc(gl.LEQUAL);			// Near things obscure far things
-
-			Sandbox.init(gl);
 		}
 	},
 
@@ -75,45 +73,11 @@ var Renderer = {
 			return shader;
 	},
 
-	/** Initializes shaders */
-	initShaders: function(){
-		// create shaders
-		var fragmentShader = this.createShader(
-			document.getElementById('fragmentShader').textContent,
-			gl.FRAGMENT_SHADER
-		);
-		var vertexShader   = this.createShader(
-			document.getElementById('vertexShader').textContent,
-			gl.VERTEX_SHADER
-		);
-	  
-		// create program, attach shaders and link
-		shaderProgram = gl.createProgram();
-		gl.attachShader(shaderProgram, vertexShader);
-		gl.attachShader(shaderProgram, fragmentShader);
-		gl.linkProgram(shaderProgram);
-	  
-	  	// alert if linking fails
-		if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-			alert(gl.getProgramInfoLog(program));
-		}
-	  
-		// use program
-		gl.useProgram(shaderProgram);
-	  
-	  /*
-	  	// get locations of attributes and uniforms
-		positionHandle   = gl.getAttribLocation(shaderProgram, "position");
-		timeHandle       = gl.getUniformLocation(shaderProgram, "time");
-		resolutionHandle = gl.getUniformLocation(shaderProgram, "resolution");
-		projectionHandle = gl.getUniformLocation(shaderProgram, "projection");
-		modelviewHandle  = gl.getUniformLocation(shaderProgram, "modelview");
-*/
-		gl.useProgram(null);
-	},
-
 	/** Renders the scene */
 	render: function() {
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
 		Sandbox.render();
+		ModelRenderer.renderModel(Renderer.models['bitwaffle']);
 	}
 }
