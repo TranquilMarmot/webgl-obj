@@ -89,7 +89,7 @@
 
 		void main() {
 		    //vec4 texColor = texture2D(Tex1, TexCoord);
-		    vec4 texColor = vec4(0.0, 1.0, 0.0, 1.0);
+		    vec4 texColor = vec4(0.0, 0.3, 0.0, 1.0);
 		    	
 		    if(Light.LightEnabled){
 			    vec3 ambAndDiff, spec;
@@ -138,11 +138,12 @@
 
     <script src="js/sylvester.js" type="text/javascript"></script>
     <script src="js/glUtils.js" type="text/javascript"></script>
-    <script src="js/renderer.js" type="text/javascript"></script>
 
-    <script src="js/sandbox.js" type="text/javascript"></script>
     <script src="js/modelloader.js" type="text/javascript"></script>
     <script src="js/modelrenderer.js" type="text/javascript"></script>
+    <script src="js/textureloader.js" type="text/javascript"></script>
+    <script src="js/sandbox.js" type="text/javascript"></script>
+    <script src="js/renderer.js" type="text/javascript"></script>
     
     <script src="js/runner.js" type="text/javascript"></script>
 

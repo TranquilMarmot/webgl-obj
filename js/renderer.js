@@ -1,8 +1,9 @@
 var Renderer = {
 	canvas: {}, gl: {},   // canvas being drawn to and WebGL context
-	shaderProgram: {},    // shader program handle
-	quadBuffer: {},       // buffer to hold position vertices for quad
-	models:     {},       // list of loaded models
+	shaderProgram:  {},   // shader program handle
+	quadBuffer:     {},   // buffer to hold position vertices for quad
+	models:         {},   // list of loaded models
+	textures:       {},   // list of loaded textures
 
 	// used for timing
 	time: 0, startTime: Date.now(),

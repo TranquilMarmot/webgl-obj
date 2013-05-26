@@ -68,6 +68,9 @@ var ModelRenderer = {
 	renderModel: function(model, location){
 		// only render if model exists
 		if(model){
+			gl.enable(gl.DEPTH_TEST);			// Enable depth testing
+			gl.depthFunc(gl.LEQUAL);			// Near things obscure far things
+
 			this.projection = makePerspective(45, canvas.width/canvas.height, 0.1, 100.0);
 			this.modelview  = Matrix.I(4);
 	  
@@ -75,7 +78,9 @@ var ModelRenderer = {
 
 	  		wat++;
 	  		var rads = wat * Math.PI / 180.0;
-	  		var m = Matrix.Rotation(rads, $V([1.0, 0.0, 0.0])).ensure4x4();
+	  		var initrot = 90 * Math.PI / 180.0;
+	  		var m = Matrix.Rotation(initrot, $V([1.0, 0.0, 0.0])).ensure4x4();
+	  		m = m.x(Matrix.Rotation(rads, $V([0.0, 0.0, 1.0])).ensure4x4());
 			this.modelview = this.modelview.x(m);	 
 
 
@@ -94,15 +99,16 @@ var ModelRenderer = {
 			gl.vertexAttribPointer(this.texHandle, 2, gl.FLOAT, false, 0, 0);
 
 			// temp lighting
-			gl.uniform4f(this.lightPosHandle, 0.0, 0.0, 0.0, 0.0);
+			gl.uniform4f(this.lightPosHandle, 0.0, 0.0,-5.0, 0.0);
 			gl.uniform3f(this.lightIntensityHandle, 0.9, 0.9, 0.9);
 			gl.uniform1i(this.lightEnableHandle, 1);
 
 			gl.uniformMatrix4fv(this.projectionHandle, false, new Float32Array(this.projection.flatten()));
 	 		gl.uniformMatrix4fv(this.modelviewHandle, false, new Float32Array(this.modelview.flatten()));
-	 		var normMat = Matrix.create([[this.modelview.elements[0][0], this.modelview.elements[0][1], this.modelview.elements[0][2]],
-                          [this.modelview.elements[1][0], this.modelview.elements[1][1], this.modelview.elements[1][2]],
-                          [this.modelview.elements[2][0], this.modelview.elements[2][1], this.modelview.elements[2][2]]]);
+	 		var normMat = Matrix.create(
+	 					[[this.modelview.elements[0][0], this.modelview.elements[0][1], this.modelview.elements[0][2]],
+						[this.modelview.elements[1][0], this.modelview.elements[1][1], this.modelview.elements[1][2]],
+                    	[this.modelview.elements[2][0], this.modelview.elements[2][1], this.modelview.elements[2][2]]]);
 	 		gl.uniformMatrix3fv(this.normalMatrixHandle, false, new Float32Array(normMat.flatten()));
 
 			for(var i = 0; i < model.parts.length; i++){
@@ -115,7 +121,6 @@ var ModelRenderer = {
 				gl.uniform3f(this.kdHandle, mat.Kd[0], mat.Kd[1], mat.Kd[2]);
 				gl.uniform1f(this.shinyHandle, mat.Shininess);
 
-				console.log(i + " " + part.index + " " + part.count);
 				gl.drawArrays(gl.TRIANGLES, part.index, part.count);
 			}
 

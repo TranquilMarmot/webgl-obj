@@ -70,13 +70,14 @@ var Sandbox = {
 	},
 
 	render: function(){
+		gl.disable(gl.DEPTH_TEST);			// Enable depth testing
 		gl.useProgram(this.shaderProgram);
 		this.time = Date.now() - this.startTime;
 	  
 		this.projection = makePerspective(45, canvas.width/canvas.height, 0.1, 100.0);
 		this.modelview  = Matrix.I(4);
 	  
-	  	this.modelview = this.modelview.x(Matrix.Translation($V([-0.0, 0.0, -10.0])));
+	  	this.modelview = this.modelview.x(Matrix.Translation($V([-0.0, 0.0, -0.101])));
 
 	  	//var rads = (this.time / 10.0) * Math.PI / 180.0;
 
