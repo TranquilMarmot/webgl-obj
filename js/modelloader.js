@@ -60,7 +60,6 @@ var ModelLoader = {
 				gl.drawArrays(gl.TRIANGLES, part.index, part.count);
 			}
 
-
 			gl.disableVertexAttribArray(positionHandle);
 			gl.disableVertexAttribArray(normalHandle);
 			gl.disableVertexAttribArray(texHandle);

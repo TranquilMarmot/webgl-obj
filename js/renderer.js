@@ -7,8 +7,9 @@ var Renderer = {
 	modelview: {}, projection: {},
 	
 	// location of attributes and uniforms in shaders
-	positionHandle: {}, timeHandle: {}, resolutionHandle: {},
-	modelviewHandle: {}, projectionHandle: {},
+	//positionHandle = {}, normalHandle = {}, texCoordHandle = {},
+	//modelviewHandle = {}, 
+
 
 	// used for timing
 	time: 0, startTime: Date.now(),
@@ -26,8 +27,8 @@ var Renderer = {
 			this.onWindowResize();
 			window.addEventListener('resize', this.onWindowResize, false);
 
-			this.initShaders();
-			this.initBuffers();
+			//this.initShaders();
+			//this.initBuffers();
 	  }
 	},
 
@@ -56,22 +57,9 @@ var Renderer = {
 			gl.clearDepth(1.0);					// Clear everything
 			gl.enable(gl.DEPTH_TEST);			// Enable depth testing
 			gl.depthFunc(gl.LEQUAL);			// Near things obscure far things
-		}
-	},
 
-	/** Initializes buffer to send vertex position info to WebGL */
-	initBuffers: function() {
-		// create buffer for the quad's vertices.  
-		quadBuffer = gl.createBuffer();
-	  
-		// bind array buffer and send data
-		gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-			1.0,  1.0,	0.0,
-			-1.0, 1.0,	0.0,
-			1.0,  -1.0, 0.0,
-			-1.0, -1.0, 0.0
-		]), gl.STATIC_DRAW);
+			Sandbox.init(gl);
+		}
 	},
 
 	/** Creates a shader of the given type with the given string, returns shader object on success, null otherwise */
@@ -113,43 +101,19 @@ var Renderer = {
 		// use program
 		gl.useProgram(shaderProgram);
 	  
+	  /*
 	  	// get locations of attributes and uniforms
 		positionHandle   = gl.getAttribLocation(shaderProgram, "position");
 		timeHandle       = gl.getUniformLocation(shaderProgram, "time");
 		resolutionHandle = gl.getUniformLocation(shaderProgram, "resolution");
 		projectionHandle = gl.getUniformLocation(shaderProgram, "projection");
 		modelviewHandle  = gl.getUniformLocation(shaderProgram, "modelview");
-
+*/
 		gl.useProgram(null);
 	},
 
 	/** Renders the scene */
 	render: function() {
-		gl.useProgram(shaderProgram);
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-		this.time = Date.now() - this.startTime;
-	  
-		this.projection = makePerspective(45, canvas.width/canvas.height, 0.1, 100.0);
-		this.modelview  = Matrix.I(4);
-	  
-	  	this.modelview = this.modelview.x(Matrix.Translation($V([-0.0, 0.0, -5.0])));
-
-	  	var rads = (this.time / 10.0) * Math.PI / 180.0;
-
-	  	var m = Matrix.Rotation(rads, $V([0.0, 1.0, 0.0])).ensure4x4();
-		this.modelview = this.modelview.x(m);	  	
-	  
-		gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
-		gl.vertexAttribPointer(positionHandle, 3, gl.FLOAT, false, 0, 0);
-		
-		gl.uniform1f(timeHandle, this.time / 1000);
-		gl.uniform2f(resolutionHandle, canvas.width, canvas.height);
-		gl.uniformMatrix4fv(projectionHandle, false, new Float32Array(this.projection.flatten()));
-	 	gl.uniformMatrix4fv(modelviewHandle, false, new Float32Array(this.modelview.flatten()));
-
-	 	gl.enableVertexAttribArray(positionHandle);
-		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-		gl.disableVertexAttribArray(positionHandle);
-		gl.useProgram(null);
+		Sandbox.render();
 	}
 }
