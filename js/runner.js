@@ -25,8 +25,6 @@ var Runner = {
 		requestAnimationFrame(Runner.update);
 		// render scene
 		Renderer.render();
-
-		//console.log(Runner.models['bitwaffle']);
 	},
 
 	/** Initializes the HTML5 canvas*/
