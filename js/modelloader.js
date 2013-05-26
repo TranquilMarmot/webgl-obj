@@ -5,9 +5,9 @@ var ModelLoader = {
 	  * mtlutl: URL of .mtl file that has material lib for .obj file
 	  * onFinish: Called with finished model as parameter
 	  */
-	loadModel: function(objurl, mtlurl, onFinish){
+	loadModel: function(objurl, mtlurl, textureName, onFinish){
 		$.get(mtlurl, function(mtldata){
-			ModelLoader.parseMtl(mtldata, objurl, onFinish);
+			ModelLoader.parseMtl(mtldata, objurl, textureName, onFinish);
 		});
 	},
 
@@ -17,7 +17,7 @@ var ModelLoader = {
 	  * objurl: URL of obj file to load after loading mtl file
 	  * onFinish: Called with finished model as parameter
 	  */
-	parseMtl: function(text, objurl, onFinish){
+	parseMtl: function(text, objurl, textureName, onFinish){
 		var lines = text.split("\n");
 
 		var
@@ -100,7 +100,7 @@ var ModelLoader = {
 
 		// parse obj file with loaded mtl library
 		$.get(objurl, function(objdata){
-			ModelLoader.parseObj(mtlList, objdata, onFinish);
+			ModelLoader.parseObj(mtlList, objdata, textureName, onFinish);
 		});
 	},
 
@@ -110,7 +110,7 @@ var ModelLoader = {
 	  * text: Plaintext of obj file
 	  * onFinish: Called with finished model as parameter
 	  */
-	parseObj: function(mtlLib, text, onFinish){
+	parseObj: function(mtlLib, text, textureName, onFinish){
 		var
 			/* list of every vertex/normal/texture coordinate */
 			vertices = [[0.0,0.0,0.0]],
@@ -298,6 +298,8 @@ var ModelLoader = {
 
 		}
 
+		console.log(texArr);
+
 		// create buffers for sending data to WebGL
 		var
 		vertBuff = gl.createBuffer(),
@@ -319,6 +321,7 @@ var ModelLoader = {
 		model.vertBuff = vertBuff;
 		model.normBuff = normBuff;
 		model.texBuff = texBuff;
+		model.texture = textureName;
 
 		onFinish(model);
 	}

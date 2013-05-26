@@ -5,7 +5,7 @@ var ModelRenderer = {
 	modelview: {}, projection: {},
 
 	modelviewHandle: {}, projectionHandle: {}, normalMatrixHandle: {},
-	positionHandle: {}, normalHandle: {}, texHandle: {},
+	positionHandle: {}, normalHandle: {}, texCoordHandle: {},
 	lightPosHandle: {}, lightIntensityHandle: {}, lightEnableHandle: {},
 	kaHandle: {}, ksHandle: {}, kdHandle: {}, shinyHandle: {},
 	texHandle: {},
@@ -17,11 +17,11 @@ var ModelRenderer = {
 	initShaders: function(){
 		// create shaders
 		var fragmentShader = Renderer.createShader(
-			document.getElementById('fragmentShader').textContent,
+			document.getElementById('3DfragmentShader').textContent,
 			gl.FRAGMENT_SHADER
 		);
 		var vertexShader   = Renderer.createShader(
-			document.getElementById('vertexShader').textContent,
+			document.getElementById('3DvertexShader').textContent,
 			gl.VERTEX_SHADER
 		);
 
@@ -46,7 +46,7 @@ var ModelRenderer = {
 
 		this.positionHandle = gl.getAttribLocation(this.shaderProgram, "VertexPosition");
 		this.normalHandle   = gl.getAttribLocation(this.shaderProgram, "VertexNormal");
-		this.texHandle      = gl.getAttribLocation(this.shaderProgram, "VertexNormal");
+		this.texCoordHandle      = gl.getAttribLocation(this.shaderProgram, "VertexTexCoord");
 		
 		this.lightPosHandle = gl.getUniformLocation(this.shaderProgram, "Light.LightPosition");
 		this.lightIntensityHandle = gl.getUniformLocation(this.shaderProgram, "Light.LightIntensity");
@@ -74,9 +74,9 @@ var ModelRenderer = {
 			this.projection = makePerspective(45, canvas.width/canvas.height, 0.1, 100.0);
 			this.modelview  = Matrix.I(4);
 	  
-	  		this.modelview = this.modelview.x(Matrix.Translation($V([-0.0, 0.0, -5.0])));
+	  		this.modelview = this.modelview.x(Matrix.Translation(location));
 
-	  		wat++;
+	  		wat += 0.5;
 	  		var rads = wat * Math.PI / 180.0;
 	  		var initrot = 90 * Math.PI / 180.0;
 	  		var m = Matrix.Rotation(initrot, $V([1.0, 0.0, 0.0])).ensure4x4();
@@ -94,12 +94,12 @@ var ModelRenderer = {
 			gl.bindBuffer(gl.ARRAY_BUFFER, model.normBuff);
 			gl.vertexAttribPointer(this.normalHandle, 3, gl.FLOAT, false, 0, 0);
 
-			gl.enableVertexAttribArray(this.texHandle);
+			gl.enableVertexAttribArray(this.texCoordHandle);
 			gl.bindBuffer(gl.ARRAY_BUFFER, model.texBuff);
-			gl.vertexAttribPointer(this.texHandle, 2, gl.FLOAT, false, 0, 0);
+			gl.vertexAttribPointer(this.texCoordHandle, 2, gl.FLOAT, false, 0, 0);
 
 			// temp lighting
-			gl.uniform4f(this.lightPosHandle, 0.0, 0.0,-5.0, 0.0);
+			gl.uniform4f(this.lightPosHandle, 0.0, 0.0, 5.0, 0.0);
 			gl.uniform3f(this.lightIntensityHandle, 0.9, 0.9, 0.9);
 			gl.uniform1i(this.lightEnableHandle, 1);
 
@@ -110,6 +110,10 @@ var ModelRenderer = {
 						[this.modelview.elements[1][0], this.modelview.elements[1][1], this.modelview.elements[1][2]],
                     	[this.modelview.elements[2][0], this.modelview.elements[2][1], this.modelview.elements[2][2]]]);
 	 		gl.uniformMatrix3fv(this.normalMatrixHandle, false, new Float32Array(normMat.flatten()));
+
+	 		gl.activeTexture(gl.TEXTURE0);
+	 		gl.bindTexture(gl.TEXTURE_2D, Renderer.textures[model.texture]);
+	 		gl.uniform1i(this.texHandle, 0);
 
 			for(var i = 0; i < model.parts.length; i++){
 				var
@@ -126,7 +130,7 @@ var ModelRenderer = {
 
 			gl.disableVertexAttribArray(this.positionHandle);
 			gl.disableVertexAttribArray(this.normalHandle);
-			gl.disableVertexAttribArray(this.texHandle);
+			gl.disableVertexAttribArray(this.texCoordHandle);
 
 			gl.useProgram(null);
 		}

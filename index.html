@@ -47,7 +47,7 @@
       }
     </script>
 
-    <script id="fragmentShader" type="x-shader/x-fragment">
+    <script id="3DfragmentShader" type="x-shader/x-fragment">
     	#ifdef GL_ES
 		precision mediump float;
 		#endif
@@ -56,7 +56,7 @@
 		varying vec3 Normal;
 		varying vec2 TexCoord;
 
-		//uniform sampler2D Tex1;
+		uniform sampler2D Tex1;
 
 		struct LightInfo {
 		  vec4 LightPosition;  // Light position in eye coords.
@@ -88,8 +88,8 @@
 		}
 
 		void main() {
-		    //vec4 texColor = texture2D(Tex1, TexCoord);
-		    vec4 texColor = vec4(0.0, 0.3, 0.0, 1.0);
+		    vec4 texColor = texture2D(Tex1, TexCoord);
+		    //vec4 texColor = vec4(0.0, 0.3, 0.0, 1.0);
 		    	
 		    if(Light.LightEnabled){
 			    vec3 ambAndDiff, spec;
@@ -109,7 +109,7 @@
 		}
     </script>
 
-    <script id="vertexShader" type="x-shader/x-vertex">
+    <script id="3DvertexShader" type="x-shader/x-vertex">
 		attribute vec3 VertexPosition;
 		attribute vec3 VertexNormal;
 		attribute vec2 VertexTexCoord;

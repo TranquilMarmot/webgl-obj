@@ -25,12 +25,23 @@ var Renderer = {
 			ModelRenderer.init();
 	  	}
 
-	  	var bitwaffle = ModelLoader.loadModel(
-			"models/bitwaffle/bitwaffle.obj", "models/bitwaffle/bitwaffle.mtl",
+	  	loadTexture("bitwaffle", "models/bitwaffle/bitwaffle.png");
+
+	  	ModelLoader.loadModel(
+			"models/bitwaffle/bitwaffle.obj", "models/bitwaffle/bitwaffle.mtl", "bitwaffle",
 			function(model){
 				Renderer.models['bitwaffle'] = model;
 			}
 		);
+
+		loadTexture("diamond", "models/diamond/diamond.png");
+		ModelLoader.loadModel(
+			"models/diamond/diamond.obj", "models/diamond/diamond.mtl", "diamond",
+			function(model){
+				Renderer.models['diamond'] = model;
+			}
+		);
+
 	},
 
 	/** What happens when window gets resized */
@@ -56,8 +67,6 @@ var Renderer = {
 		if (gl) {
 			gl.clearColor(0.0, 0.0, 0.0, 1.0);	// Clear to black, fully opaque
 			gl.clearDepth(1.0);					// Clear everything
-			gl.enable(gl.DEPTH_TEST);			// Enable depth testing
-			gl.depthFunc(gl.LEQUAL);			// Near things obscure far things
 		}
 	},
 
@@ -79,6 +88,9 @@ var Renderer = {
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 		Sandbox.render();
-		ModelRenderer.renderModel(Renderer.models['bitwaffle']);
+		ModelRenderer.renderModel(Renderer.models['bitwaffle'], $V([-0.0, 0.0, -10.0]));
+		ModelRenderer.renderModel(Renderer.models['diamond'], $V([-0.0, 1.0, -5.0]));
+		ModelRenderer.renderModel(Renderer.models['diamond'], $V([-0.0, -1.0, -5.0]));
+		ModelRenderer.renderModel(Renderer.models['diamond'], $V([-1.0, 1.0, -5.0]));
 	}
 }
