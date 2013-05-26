@@ -19,7 +19,7 @@
 		// background thing
 		vec2 position = ( gl_FragCoord.xy / resolution.xy * 2.0) - 1.0;
 		vec4 veca = vec4((mod(atan(position.x ,position.y) / 1.6, 0.1) * 15.0 + 0.5) * 0.6);
-		vec4 vecb = vec4(0.2, 0.5, 1.0, 1.0) * (1.5- length(position));
+		vec4 vecb = vec4(0.2, sin(time), 0.3, 1.0) * (1.5- length(position));
 		float l = (length(vec2(position.x , position.y)));
 		vec4 color = veca * vecb * l;
 		

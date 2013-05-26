@@ -8,11 +8,26 @@ var Renderer = {
 	// used for timing
 	time: 0, startTime: Date.now(),
 
+	diamondLocs: [],
+
+	diamondRots: [],
+
 	// size of window
 	windowWidth: 0.0, windowHeight: 0.0,
 
 	/** Called when canvas is created */
 	init: function() {
+		for(var i = 5; i < 100; i++){
+			var x = Math.random() * i, y = Math.random() * i, z = -i;
+			if(Math.random() > 0.5)
+				x = -x;
+			if(Math.random() < 0.5)
+				y = -y;
+			this.diamondLocs.push([x, y, z]);
+			this.diamondRots.push([Math.random(), Math.random(), Math.random(), Math.random()]);
+		}
+
+
 		this.initGL(canvas);
 	  
 		// only continue if WebGL is available
@@ -88,9 +103,30 @@ var Renderer = {
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 		Sandbox.render();
-		ModelRenderer.renderModel(Renderer.models['bitwaffle'], $V([-0.0, 0.0, -10.0]));
-		ModelRenderer.renderModel(Renderer.models['diamond'], $V([-0.0, 1.0, -5.0]));
-		ModelRenderer.renderModel(Renderer.models['diamond'], $V([-0.0, -1.0, -5.0]));
-		ModelRenderer.renderModel(Renderer.models['diamond'], $V([-1.0, 1.0, -5.0]));
+
+		wat += 0.05;
+		var rads = wat * Math.PI / 180.0;
+
+		for(var i = 0; i < this.diamondLocs.length; i++){
+			this.diamondLocs[i][1] -= 0.025;
+			if(this.diamondLocs[i][1] < -10.0)
+				this.diamondLocs[i][1] = 10.0;
+
+			var m = Matrix.Translation($V(this.diamondLocs[i])).ensure4x4();
+			var rot = this.diamondRots[i];
+			m = m.x(Matrix.Rotation(rot[0], $V([rot[1], rot[2], rot[3]])).ensure4x4());
+				
+			rot[0] += (Math.random() / 100.0) + 0.05;
+
+			ModelRenderer.renderModel(Renderer.models['diamond'], m);
+		}
+
+		var initwafflerot = 90 * Math.PI / 180.0;
+		var m = Matrix.I(4);
+		m = m.x(Matrix.Translation($V([0.0, 0.0, -7.0])));
+	  	m = m.x(Matrix.Rotation(initwafflerot, $V([1.0, 0.0, 0.0])).ensure4x4());
+	  	m = m.x(Matrix.Rotation(wat, $V([0.0, 0.0, 1.0])).ensure4x4());
+
+		ModelRenderer.renderModel(Renderer.models['bitwaffle'], m);
 	}
 }

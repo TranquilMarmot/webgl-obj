@@ -3,19 +3,30 @@ function start(){
 }
 
 var Runner = {
+	// used for timing
+	time: 0, startTime: Date.now(),
+
 	/** Starts and runs app */
 	start: function(){
 		Renderer.canvas = Runner.initCanvas();
 		Renderer.init();
-		Runner.update();
+		Runner.animate();
 	},
 
 	/** What actually gets called every frame */
-	update: function(){
+	animate: function(){
 		// request next update call before doing anything
-		requestAnimationFrame(Runner.update);
+		requestAnimationFrame(Runner.animate);
+		Runner.update();
 		// render scene
 		Renderer.render();
+
+	},
+
+	update: function(){
+		this.time =  Date.now() - this.startTime;
+
+		Sandbox.update(this.time);
 	},
 
 	/** Initializes the HTML5 canvas*/

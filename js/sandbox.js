@@ -8,11 +8,10 @@ var Sandbox = {
 	positionHandle: {}, timeHandle: {}, resolutionHandle: {},
 	modelviewHandle: {}, projectionHandle: {},
 
-	// used for timing
-	time: 0, startTime: Date.now(),
-
 	// size of window
 	windowWidth: 0.0, windowHeight: 0.0,
+
+	time: 0,
 
 	init: function(){
 		this.initShaders();
@@ -45,11 +44,11 @@ var Sandbox = {
 		gl.useProgram(this.shaderProgram);
 	  
 	  	// get locations of attributes and uniforms
-		positionHandle   = gl.getAttribLocation(this.shaderProgram, "position");
-		timeHandle       = gl.getUniformLocation(this.shaderProgram, "time");
-		resolutionHandle = gl.getUniformLocation(this.shaderProgram, "resolution");
-		projectionHandle = gl.getUniformLocation(this.shaderProgram, "projection");
-		modelviewHandle  = gl.getUniformLocation(this.shaderProgram, "modelview");
+		this.positionHandle   = gl.getAttribLocation(this.shaderProgram, "position");
+		this.timeHandle       = gl.getUniformLocation(this.shaderProgram, "time");
+		this.resolutionHandle = gl.getUniformLocation(this.shaderProgram, "resolution");
+		this.projectionHandle = gl.getUniformLocation(this.shaderProgram, "projection");
+		this.modelviewHandle  = gl.getUniformLocation(this.shaderProgram, "modelview");
 
 		gl.useProgram(null);
 	},
@@ -69,10 +68,14 @@ var Sandbox = {
 		]), gl.STATIC_DRAW);
 	},
 
+	update: function(timeStep){
+		this.time = timeStep;
+	},
+
 	render: function(){
 		gl.disable(gl.DEPTH_TEST);			// Enable depth testing
 		gl.useProgram(this.shaderProgram);
-		this.time = Date.now() - this.startTime;
+		//this.time = Date.now() - this.startTime;
 	  
 		this.projection = makePerspective(45, canvas.width/canvas.height, 0.1, 100.0);
 		this.modelview  = Matrix.I(4);
@@ -85,16 +88,16 @@ var Sandbox = {
 		//this.modelview = this.modelview.x(m);	  	
 	  
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.quadBuffer);
-		gl.vertexAttribPointer(positionHandle, 3, gl.FLOAT, false, 0, 0);
+		gl.vertexAttribPointer(this.positionHandle, 3, gl.FLOAT, false, 0, 0);
 		
-		gl.uniform1f(timeHandle, this.time / 1000);
-		gl.uniform2f(resolutionHandle, canvas.width, canvas.height);
-		gl.uniformMatrix4fv(projectionHandle, false, new Float32Array(this.projection.flatten()));
-	 	gl.uniformMatrix4fv(modelviewHandle, false, new Float32Array(this.modelview.flatten()));
+		gl.uniform1f(this.timeHandle, this.time / 1000);
+		gl.uniform2f(this.resolutionHandle, canvas.width, canvas.height);
+		gl.uniformMatrix4fv(this.projectionHandle, false, new Float32Array(this.projection.flatten()));
+	 	gl.uniformMatrix4fv(this.modelviewHandle, false, new Float32Array(this.modelview.flatten()));
 
-	 	gl.enableVertexAttribArray(positionHandle);
+	 	gl.enableVertexAttribArray(this.positionHandle);
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-		gl.disableVertexAttribArray(positionHandle);
+		gl.disableVertexAttribArray(this.positionHandle);
 		gl.useProgram(null);
 	}
 }

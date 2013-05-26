@@ -65,7 +65,7 @@ var ModelRenderer = {
 		wat = 0;
 	},
 
-	renderModel: function(model, location){
+	renderModel: function(model, matrix){
 		// only render if model exists
 		if(model){
 			gl.enable(gl.DEPTH_TEST);			// Enable depth testing
@@ -73,15 +73,7 @@ var ModelRenderer = {
 
 			this.projection = makePerspective(45, canvas.width/canvas.height, 0.1, 100.0);
 			this.modelview  = Matrix.I(4);
-	  
-	  		this.modelview = this.modelview.x(Matrix.Translation(location));
-
-	  		wat += 0.5;
-	  		var rads = wat * Math.PI / 180.0;
-	  		var initrot = 90 * Math.PI / 180.0;
-	  		var m = Matrix.Rotation(initrot, $V([1.0, 0.0, 0.0])).ensure4x4();
-	  		m = m.x(Matrix.Rotation(rads, $V([0.0, 0.0, 1.0])).ensure4x4());
-			this.modelview = this.modelview.x(m);	 
+			this.modelview = (this.modelview.x(matrix.ensure4x4())).ensure4x4(); 
 
 
 			gl.useProgram(this.shaderProgram);

@@ -298,8 +298,6 @@ var ModelLoader = {
 
 		}
 
-		console.log(texArr);
-
 		// create buffers for sending data to WebGL
 		var
 		vertBuff = gl.createBuffer(),
