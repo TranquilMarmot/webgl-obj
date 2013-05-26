@@ -63,7 +63,7 @@ var Renderer = {
 
 	/** Initializes buffer to send vertex position info to WebGL */
 	initBuffers: function() {
-		// Create a buffer for the quad's vertices.  
+		// create buffer for the quad's vertices.  
 		quadBuffer = gl.createBuffer();
 	  
 		// bind array buffer and send data

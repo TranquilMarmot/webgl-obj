@@ -1,0 +1,22 @@
+# Blender MTL File: 'bitwaffle-11.blend'
+# Material Count: 4
+
+newmtl darkbits
+Ns 96.078431
+Ka 0.700000 0.700000 0.700000
+Kd 0.262146 0.280438 0.044603
+Ks 0.500000 0.372701 0.153269
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\nate2_000\Documents\offworld-raw\blend\waffle.png
+
+newmtl waffle
+Ns 101.960784
+Ka 0.800000 0.800000 0.800000
+Kd 0.640000 0.612413 0.228184
+Ks 0.082882 0.083972 0.014808
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\nate2_000\Documents\offworld-raw\blend\waffle.png

@@ -3,13 +3,11 @@ function start(){
 }
 
 var Runner = {
-	canvas: {},
-
 	/** Starts and runs app */
 	start: function(){
-		Runner.initCanvas();
-		Renderer.canvas = Runner.canvas;
+		Renderer.canvas = Runner.initCanvas();
 		Renderer.init();
+		ModelLoader.loadModel("models/bitwaffle/bitwaffle.mtl", "models/bitwaffle/bitwaffle.obj");
 		Runner.update();
 	},
 
@@ -46,5 +44,7 @@ var Runner = {
 		// create canvas that we'll be rendering to
 		canvas = document.createElement("canvas");
 		div.appendChild(canvas);
+
+		return canvas;
 	}
 }
