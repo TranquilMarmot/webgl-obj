@@ -3,19 +3,33 @@ function start(){
 }
 
 var Runner = {
+	models: {},
+
+
 	/** Starts and runs app */
 	start: function(){
 		Renderer.canvas = Runner.initCanvas();
 		Renderer.init();
-		ModelLoader.loadModel("models/bitwaffle/bitwaffle.obj", "models/bitwaffle/bitwaffle.mtl");
+		var bitwaffle = ModelLoader.loadModel(
+			"models/bitwaffle/bitwaffle.obj", "models/bitwaffle/bitwaffle.mtl",
+			function(model){
+				Runner.models['bitwaffle'] = model;
+			}
+		);
 		Runner.update();
 	},
 
+	/** What actually gets called every frame */
 	update: function(){
+		// request next update call before doing anything
 		requestAnimationFrame(Runner.update);
+		// render scene
 		Renderer.render();
+
+		//console.log(Runner.models['bitwaffle']);
 	},
 
+	/** Initializes the HTML5 canvas*/
 	initCanvas: function(){
 		// set animation to be at 60 fps
 		if (!window.requestAnimationFrame){

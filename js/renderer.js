@@ -1,20 +1,18 @@
 var Renderer = {
-	canvas: {},
-	// WebGL instance
-	gl: {},
-	// buffer to hold position vertices
-	quadBuffer: {},
+	canvas: {}, gl: {},   // canvas being drawn to and WebGL context
+	shaderProgram: {},    // shader program handle
+	quadBuffer: {},       // buffer to hold position vertices for quad
+
 	//  modelview and projection matrices
 	modelview: {}, projection: {},
-	// shader program handle
-	shaderProgram: {},
+	
 	// location of attributes and uniforms in shaders
 	positionHandle: {}, timeHandle: {}, resolutionHandle: {},
 	modelviewHandle: {}, projectionHandle: {},
-	// timer
-	time: 0,
-	// time that application started
-	startTime: Date.now(),
+
+	// used for timing
+	time: 0, startTime: Date.now(),
+
 	// size of window
 	windowWidth: 0.0, windowHeight: 0.0,
 
@@ -50,7 +48,7 @@ var Renderer = {
 			gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
 		}catch(error) {
 			// alert user if gl isn't supported
-			alert("Oh man, couldn't initialize WebGL! What gives you using an old browser or something?");
+			alert("Oh man, couldn't initialize WebGL! What gives, you using an old browser or something? Psh.");
 		}
 
 		if (gl) {
@@ -96,7 +94,7 @@ var Renderer = {
 			document.getElementById('fragmentShader').textContent,
 			gl.FRAGMENT_SHADER
 		);
-		var vertexShader = this.createShader(
+		var vertexShader   = this.createShader(
 			document.getElementById('vertexShader').textContent,
 			gl.VERTEX_SHADER
 		);
@@ -116,11 +114,11 @@ var Renderer = {
 		gl.useProgram(shaderProgram);
 	  
 	  	// get locations of attributes and uniforms
-		positionHandle = gl.getAttribLocation(shaderProgram, "position");
-		timeHandle = gl.getUniformLocation(shaderProgram, "time");
+		positionHandle   = gl.getAttribLocation(shaderProgram, "position");
+		timeHandle       = gl.getUniformLocation(shaderProgram, "time");
 		resolutionHandle = gl.getUniformLocation(shaderProgram, "resolution");
 		projectionHandle = gl.getUniformLocation(shaderProgram, "projection");
-		modelviewHandle = gl.getUniformLocation(shaderProgram, "modelview");
+		modelviewHandle  = gl.getUniformLocation(shaderProgram, "modelview");
 
 		gl.useProgram(null);
 	},
@@ -132,9 +130,14 @@ var Renderer = {
 		this.time = Date.now() - this.startTime;
 	  
 		this.projection = makePerspective(45, canvas.width/canvas.height, 0.1, 100.0);
-		this.modelview = Matrix.I(4);
+		this.modelview  = Matrix.I(4);
 	  
-	  	this.modelview = this.modelview.x(Matrix.Translation($V([-0.0, 0.0, -0.5])));
+	  	this.modelview = this.modelview.x(Matrix.Translation($V([-0.0, 0.0, -5.0])));
+
+	  	var rads = (this.time / 10.0) * Math.PI / 180.0;
+
+	  	var m = Matrix.Rotation(rads, $V([0.0, 1.0, 0.0])).ensure4x4();
+		this.modelview = this.modelview.x(m);	  	
 	  
 		gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
 		gl.vertexAttribPointer(positionHandle, 3, gl.FLOAT, false, 0, 0);

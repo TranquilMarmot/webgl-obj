@@ -1,15 +1,11 @@
 var ModelLoader = {
-	loadModel: function(objurl, mtlurl){
-		var model = {};
-
+	loadModel: function(objurl, mtlurl, onFinish){
 		$.get(mtlurl, function(mtldata){
-			model = ModelLoader.parseMtl(mtldata, objurl);
+			ModelLoader.parseMtl(mtldata, objurl, onFinish);
 		});
-
-		return model;
 	},
 
-	parseObj: function(mtlLib, text){
+	parseObj: function(mtlLib, text, onFinish){
 		var
 			vertices = [[0.0,0.0,0.0]],
 			normals = [[0.0,0.0,0.0]],
@@ -118,6 +114,15 @@ var ModelLoader = {
 			*/
 		}
 
+		// finish up current model part
+		if(makingModelPart){
+			modelParts.push({
+				material: currentMaterial,
+				index: currentIndex,
+				count: count
+			});
+		}
+
 		var vertsArr = [], normArr = [], texArr = [];
 
 		for(var i = 0; i < vertexIndices.length; i++){
@@ -185,11 +190,11 @@ var ModelLoader = {
 		model.normBuff = normBuff;
 		model.texBuff = texBuff;
 
-		return model;
+		onFinish(model);
 	},
 
 	/** Pases a material library then calls the given function */
-	parseMtl: function(text, objurl){
+	parseMtl: function(text, objurl, onFinish){
 		var lines = text.split("\n");
 
 		var
@@ -237,11 +242,9 @@ var ModelLoader = {
 			}
 		}
 
-		var model = {};
 		$.get(objurl, function(objdata){
-			model = ModelLoader.parseObj(mtlList, objdata);
+			model = ModelLoader.parseObj(mtlList, objdata, onFinish);
 		});
-		return model;
 	}
 
 }
