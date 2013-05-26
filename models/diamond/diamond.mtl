@@ -1,0 +1,35 @@
+# Blender MTL File: 'None'
+# Material Count: 3
+
+newmtl Bottom_diamond.png
+Ns 41.176471
+Ka 0.750000 0.750000 0.750000
+Kd 0.174080 0.512000 0.433280
+Ks 0.700000 0.700000 0.700000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd diamond.png
+map_d diamond.png
+
+newmtl Middle_diamond.png
+Ns 41.176471
+Ka 0.800000 0.800000 0.800000
+Kd 0.217794 0.640000 0.541230
+Ks 0.915385 0.915385 0.915385
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd diamond.png
+map_d diamond.png
+
+newmtl Top_diamond.png
+Ns 47.058824
+Ka 0.800000 0.800000 0.800000
+Kd 0.230045 0.623698 0.640000
+Ks 0.890051 0.974279 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd diamond.png
+map_d diamond.png

@@ -83,7 +83,7 @@ var ModelLoader = {
 					mtlLoaded = true;
 			}
 
-			// add material to 
+			// add material 
 			if(mtlLoaded){
 				var mtl = {};
 				mtl.Ka = Ka;
@@ -100,7 +100,7 @@ var ModelLoader = {
 
 		// parse obj file with loaded mtl library
 		$.get(objurl, function(objdata){
-			model = ModelLoader.parseObj(mtlList, objdata, onFinish);
+			ModelLoader.parseObj(mtlList, objdata, onFinish);
 		});
 	},
 
@@ -131,8 +131,7 @@ var ModelLoader = {
 			count = 0
 			currentMaterial = {},
 			currentIndex,
-			modelParts = [],
-			makingModelPart = false;
+			modelParts = [];
 
 		// read through whole file
 		var lines = text.split("\n");
@@ -167,14 +166,13 @@ var ModelLoader = {
 			// material group start
 			} else if(lineType == "usemtl"){
 				// so that nothing gets pushed on first "usemtl" line, we use boolean switch
-				if(makingModelPart){
+				if(count > 0){
 					modelParts.push({
 						material: currentMaterial,
 						index: currentIndex,
 						count: count
 					});
 				}
-				makingModelPart = true;
 
 				// advance current index and reset count for next model part
 				currentIndex += count;
@@ -191,7 +189,7 @@ var ModelLoader = {
 					vIndices = [], nIndices = [], tIndices = []; // temporary triangle/quad
 
 				// grab every vertex
-				for(var v = 1; v < numVertices; v++){
+				for(var v = 1; v <= numVertices; v++){
 					var indices = line[v].split("/");
 
 					// the obj file goes vertex/texture-coordinate/normal
@@ -219,8 +217,6 @@ var ModelLoader = {
 					normalIndices.push(nIndices);
 					textureIndices.push(tIndices);
 					count += 3;
-
-				
 				}
 
 			// unused (for now)
@@ -234,7 +230,7 @@ var ModelLoader = {
 		// END FILE PARSING
 
 		// finish up current model part
-		if(makingModelPart){
+		if(currentMaterial){
 			modelParts.push({
 				material: currentMaterial,
 				index: currentIndex,
@@ -270,6 +266,7 @@ var ModelLoader = {
 			vertsArr.push(firstVert[0]);
 			vertsArr.push(firstVert[1]);
 			vertsArr.push(firstVert[2]);
+
 			normArr.push(firstNorm[0]);
 			normArr.push(firstNorm[1]);
 			normArr.push(firstNorm[2]);

@@ -61,6 +61,8 @@ var ModelRenderer = {
 
 
 		gl.useProgram(null);
+
+		wat = 0;
 	},
 
 	renderModel: function(model, location){
@@ -70,6 +72,11 @@ var ModelRenderer = {
 			this.modelview  = Matrix.I(4);
 	  
 	  		this.modelview = this.modelview.x(Matrix.Translation($V([-0.0, 0.0, -5.0])));
+
+	  		wat++;
+	  		var rads = wat * Math.PI / 180.0;
+	  		var m = Matrix.Rotation(rads, $V([1.0, 0.0, 0.0])).ensure4x4();
+			this.modelview = this.modelview.x(m);	 
 
 
 			gl.useProgram(this.shaderProgram);
@@ -107,6 +114,8 @@ var ModelRenderer = {
 				gl.uniform3f(this.ksHandle, mat.Ks[0], mat.Ks[1], mat.Ks[2]);
 				gl.uniform3f(this.kdHandle, mat.Kd[0], mat.Kd[1], mat.Kd[2]);
 				gl.uniform1f(this.shinyHandle, mat.Shininess);
+
+				console.log(i + " " + part.index + " " + part.count);
 				gl.drawArrays(gl.TRIANGLES, part.index, part.count);
 			}
 
